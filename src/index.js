@@ -1,78 +1,82 @@
-import './css/styles.css';
-import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
-import { fetchCountries } from './js/fetchCountries';
-
-const DEBOUNCE_DELAY = 300;
-
 const refs = {
-  inputEl: document.querySelector('input#search-box'),
-  countryListEl: document.querySelector('.country-list'),
-  countryInfoEl: document.querySelector('.country-info'),
+  formEl: document.querySelector('form#search-form'),
+  inputEl: document.querySelector('input[type="text"]'),
+  btnEl: document.querySelector('button[type="submit"]'),
+  murkupEl: document.querySelector('.gallery'),
 };
 
-refs.inputEl.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
+refs.formEl.addEventListener('submit', onFormEl);
+let page = 1;
 
-function onInput(evt) {
-  cleanCountresEl();
-  const countryName = evt.target.value.trim();
-  if (countryName !== '') {
-    fetchCountries(countryName).then(data => {
-      if (data.length > 10) {
-        Notiflix.Notify.info(
-          'Too many matches found. Please enter a more specific name.'
+function onFormEl(evt) {
+  evt.preventDefault();
+  const searchedFoto = refs.formEl.elements.searchQuery.value;
+
+  fetchInfo(searchedFoto)
+    .then(data => {
+      if (!data.hits.length) {
+        return Notiflix.Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
         );
-      } else if (data.length >= 2 && data.length <= 10) {
-        const markup = createCountresList(data);
-        addMurkup(refs.countryListEl, markup);
-      } else if (data.length === 1) {
-        const markup = createOneCountryInfo(data);
-        addMurkup(refs.countryInfoEl, markup);
-      } else if (data.length === 0) {
-        Notiflix.Notify.failure('Oops, there is no country with that name');
       }
-    });
-  }
+      page += 1;
+      console.log(data);
+      return addMurkup(refs.murkupEl, data.hits);
+    })
+    .catch(err => console.log(err));
 }
 
-function createCountresList(arr) {
-  return arr
-    .map(({ flags: { svg }, name: { official } }) => {
-      return `<li>
-      <img src="${svg}" alt="Flag of ${official}" width="30" hight="20">
-         <b>${official}</b>
-                </li>`;
+function fetchInfo(element) {
+  const API_KEY = `29948734-f0f2c73b982a8559ced5d44b7`;
+
+  const searchParams = new URLSearchParams({
+    key: API_KEY,
+    q: element,
+    image_type: 'photo',
+    orientation: 'horizontal',
+    safesearch: 'true',
+    per_page: 40,
+    page,
+  });
+  const url = `https://pixabay.com/api/?${searchParams}`;
+
+  return fetch(url).then(res => {
+    if (res.status === 400) {
+      return Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+    }
+    return res.json();
+  });
+}
+
+function createMurkup(elements) {
+  const murkup = elements
+    .map(element => {
+      return `<div class="photo-card">
+  <img src="${element.webformatURL}" alt="${element.tags}" loading="lazy" />
+  <div class="info">
+    <p class="info-item">
+      <b>Likes</b> ${element.likes}
+    </p>
+    <p class="info-item">
+      <b>Views</b> ${element.views}
+    </p>
+    <p class="info-item">
+      <b>Comments</b> ${element.comments}
+    </p>
+    <p class="info-item">
+      <b>Downloads</b> ${element.downloads}
+    </p>
+  </div>
+</div> `;
     })
     .join('');
+  return murkup;
 }
 
-function createOneCountryInfo(arr) {
-  return arr
-    .map(
-      ({
-        flags: { svg },
-        name: { official },
-        capital,
-        population,
-        languages,
-      }) => {
-        return `
-     <div class="wrap"> <img src="${svg}" alt="Flag of ${official}" width="30" hight="20">
-         <h2 class="country-name">${official}</h2></div>
-<p><b>capital:</b> ${capital} </p>
-<p><b>population:</b> ${population} </p>
-<p><b>languages:</b> ${Object.values(languages)} </p> `;
-      }
-    )
-    .join('');
-}
-
-function addMurkup(element, murkup) {
-  return (element.innerHTML = murkup);
-}
-
-function cleanCountresEl() {
-  refs.countryListEl.innerHTML = '';
-  refs.countryInfoEl.innerHTML = '';
+function addMurkup(div, elements) {
+  div.innerHTML = createMurkup(elements);
 }
