@@ -21,44 +21,37 @@ function onFormEl(evt) {
   evt.preventDefault();
   refs.murkupEl.innerHTML = '';
   refs.btnEl.classList.add('is-hidden');
-  fetchInfo(searchedData)
-    .then(data => {
-      if (!data.hits.length) {
-        return Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-      Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-
-      refs.btnEl.classList.remove('is-hidden');
-      page += 1;
-
-      addMurkup(refs.murkupEl, data.hits);
-      gallerySimpleLightbox.refresh();
-    })
-    .catch(err => console.log(err));
+  fetchInfo(searchedData).then(data => {
+    if (!data.hits.length) {
+      return Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
+    Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+    refs.btnEl.classList.remove('is-hidden');
+    page += 1;
+    addMurkup(refs.murkupEl, data.hits);
+    gallerySimpleLightbox.refresh();
+  });
 }
-
 function onBtnEl() {
-  fetchInfo(searchedData)
-    .then(data => {
-      if (!data.hits.length) {
-        return Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-      refs.btnEl.classList.remove('is-hidden');
-      page += 1;
-      console.log(data);
-      addMurkup(refs.murkupEl, data.hits);
-      gallerySimpleLightbox.refresh();
-    })
-    .catch(err => console.log(err));
+  fetchInfo(searchedData).then(data => {
+    if (!data.hits.length) {
+      return Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
+      );
+    }
+    refs.btnEl.classList.remove('is-hidden');
+    page += 1;
+    console.log(data);
+    addMurkup(refs.murkupEl, data.hits);
+    gallerySimpleLightbox.refresh();
+  });
+  // .catch(err => console.log(err));
 }
 
 function fetchInfo(element) {
   const API_KEY = `29948734-f0f2c73b982a8559ced5d44b7`;
-
   const searchParams = new URLSearchParams({
     key: API_KEY,
     q: ` ${element}`,
@@ -69,18 +62,19 @@ function fetchInfo(element) {
     page,
   });
   const url = `https://pixabay.com/api/?${searchParams}`;
-
-  return fetch(url).then(res => {
-    if (res.status === 400) {
-      refs.btnEl.classList.add('is-hidden');
-      return Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
-    } else if (res.status === 404) {
-      return [];
-    }
-    return res.json();
-  });
+  return fetch(url)
+    .then(res => {
+      if (res.status === 400) {
+        refs.btnEl.classList.add('is-hidden');
+        return Notiflix.Notify.info(
+          "We're sorry, but you've reached the end of search results."
+        );
+      } else if (res.status === 404) {
+        return [];
+      }
+      return res.json();
+    })
+    .catch(err => console.log(err));
 }
 
 function createMurkup(elements) {
