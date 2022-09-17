@@ -1,22 +1,16 @@
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
-
 import 'simplelightbox/dist/simple-lightbox.min.css';
-
 import refs from './js/refs.js';
 import addMurkup from './js/add_murcup.js';
-
 import Fetch from './js/fech_info.js';
 
 const fetchInfo = new Fetch();
-
 const gallerySimpleLightbox = new SimpleLightbox('.gallery a');
-
 const { formEl, inputEl, btnEl, murkupEl } = refs;
 
 formEl.addEventListener('submit', onFormEl);
 btnEl.addEventListener('click', onBtnEl);
-
 inputEl.addEventListener('input', evt => {
   fetchInfo.searchedData = evt.target.value;
 });
@@ -38,6 +32,7 @@ function onFormEl(evt) {
     gallerySimpleLightbox.refresh();
   });
 }
+
 function onBtnEl() {
   fetchInfo
     .fetchInfo(fetchInfo.searchedData)

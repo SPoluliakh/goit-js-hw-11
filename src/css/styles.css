@@ -10,6 +10,7 @@ body {
   background-color: #fafafa;
   color: #212121;
   line-height: 1.5;
+  margin: 0;
 }
 
 /* *****************************************8 */
@@ -58,7 +59,8 @@ img {
   transition: scale, 250ms, liner;
 }
 
-.photo-card:hover {
+.photo-card:hover,
+.photo-card:focus {
   scale: 1.02;
 }
 
@@ -94,4 +96,47 @@ img {
   display: flex;
   justify-content: center;
   padding: 10px;
+}
+
+.search-form--input {
+  width: 300px;
+  border-top-left-radius: 2px;
+  border-bottom-left-radius: 2px;
+  border: none;
+  outline: none;
+
+  font-size: 15px;
+  padding: 10px;
+}
+
+.load-more {
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  background-color: #4056b4;
+  border: none;
+  border-radius: 2px;
+  margin: 30px auto;
+  padding: 10px 20px;
+  font-size: large;
+  transition: scale, 250ms, liner;
+}
+
+.load-more:hover,
+.load-more:focus {
+  scale: 1.02;
+}
+
+.thumb {
+  background-color: #4056b4;
+  margin-bottom: 15px;
+}
+
+.submit-btn {
+  border: none;
+  color: #000;
+  cursor: pointer;
+  background: #c3c2c2;
 }
