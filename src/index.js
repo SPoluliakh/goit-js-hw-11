@@ -1,7 +1,7 @@
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
-import refs from './js/refs.js';
+import { refs } from './js/refs.js';
 import addMurkup from './js/add_murcup.js';
 import Fetch from './js/fech_info.js';
 
