@@ -26,6 +26,9 @@ function onFormEl(evt) {
     }
     Notiflix.Notify.success(`Hooray! We found ${data.data.totalHits} images.`);
     btnEl.classList.remove('is-hidden');
+    if (data.data.totalHits <= 40) {
+      btnEl.classList.add('is-hidden');
+    }
 
     fetchInfo.pageDicriment();
     addMurkup(murkupEl, data.data.hits);
@@ -38,8 +41,9 @@ function onBtnEl() {
     .fetchInfo(fetchInfo.searchedData)
     .then(data => {
       if (!data.data.hits.length) {
+        btnEl.classList.add('is-hidden');
         return Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
+          "We're sorry, but you've reached the end of search results."
         );
       }
       btnEl.classList.remove('is-hidden');
