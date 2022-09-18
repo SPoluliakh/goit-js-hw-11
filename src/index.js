@@ -1,4 +1,3 @@
-
 import Notiflix from 'notiflix';
 import SimpleLightbox from 'simplelightbox';
 import 'simplelightbox/dist/simple-lightbox.min.css';
@@ -33,6 +32,14 @@ function onFormEl(evt) {
 
     fetchInfo.pageDicriment();
     addMurkup(murkupEl, data.data.hits);
+    const { height: cardHeight } = document
+      .querySelector('.gallery a')
+      .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+      top: cardHeight * 1,
+      behavior: 'smooth',
+    });
     gallerySimpleLightbox.refresh();
   });
 }
@@ -52,6 +59,14 @@ function onBtnEl() {
       fetchInfo.pageDicriment();
 
       addMurkup(murkupEl, data.data.hits);
+      const { height: cardHeight } = document
+        .querySelector('.gallery a')
+        .firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * 1,
+        behavior: 'smooth',
+      });
       gallerySimpleLightbox.refresh();
     })
     .catch(err => console.log(err));
