@@ -1,0 +1,19 @@
+.load-more {
+  display: block;
+  text-align: center;
+  text-transform: uppercase;
+  color: #fff;
+  cursor: pointer;
+  background-color: #4056b4;
+  border: none;
+  border-radius: 2px;
+  margin: 30px auto;
+  padding: 10px 20px;
+  font-size: large;
+  transition: scale, 250ms, liner;
+
+  &:hover,
+  &:focus {
+    scale: 1.02;
+  }
+}

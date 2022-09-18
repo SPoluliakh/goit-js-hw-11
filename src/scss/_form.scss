@@ -1,0 +1,34 @@
+.thumb {
+  background-color: #4056b4;
+  margin-bottom: 15px;
+}
+
+.submit-btn {
+  border: none;
+  color: #000;
+  cursor: pointer;
+  background: #c3c2c2;
+  padding: 5px;
+  width: 50px;
+}
+
+.icone {
+  fill: #000;
+}
+
+.search-form {
+  display: flex;
+  justify-content: center;
+  padding: 10px;
+
+  &--input {
+    width: 300px;
+    border-top-left-radius: 2px;
+    border-bottom-left-radius: 2px;
+    border: none;
+    outline: none;
+
+    font-size: 15px;
+    padding: 10px;
+  }
+}
