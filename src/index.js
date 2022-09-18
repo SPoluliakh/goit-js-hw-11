@@ -48,9 +48,10 @@ function onBtnEl() {
   fetchInfo
     .fetchInfo(fetchInfo.searchedData)
     .then(data => {
+      console.log(data);
       if (!data.data.hits.length) {
         btnEl.classList.add('is-hidden');
-        return Notiflix.Notify.failure(
+        return Notiflix.Notify.info(
           "We're sorry, but you've reached the end of search results."
         );
       }
