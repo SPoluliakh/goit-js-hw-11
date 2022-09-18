@@ -8,22 +8,24 @@
     <title>Homework 10</title>
   </head>
   <body>
-    <div class="thumb">
-      <form class="search-form" id="search-form">
-        <input
-          class="search-form--input"
-          type="text"
-          name="searchQuery"
-          autocomplete="off"
-          placeholder="Search images..."
-        />
-        <button class="submit-btn" type="submit">
-          <svg class="icone" width="16px" height="16px">
-            <use href="./images/symbol-defs.svg#icon-search"></use>
-          </svg>
-        </button>
-      </form>
-    </div>
+    <header id="header">
+      <div class="thumb">
+        <form class="search-form" id="search-form">
+          <input
+            class="search-form--input"
+            type="text"
+            name="searchQuery"
+            autocomplete="off"
+            placeholder="Search images..."
+          />
+          <button class="submit-btn" type="submit">
+            <svg class="icone" width="16px" height="16px">
+              <use href="./images/symbol-defs.svg#icon-search"></use>
+            </svg>
+          </button>
+        </form>
+      </div>
+    </header>
     <div class="container">
       <div class="gallery">
         <!-- Карточки изображений -->
@@ -31,6 +33,13 @@
 
       <button type="button" class="load-more is-hidden">Load more</button>
     </div>
+    <button class="up-button" type="button" id="myBtn" title="Go to top">
+      <a href="#header"
+        ><svg class="up-button__icon">
+          <use href="./images/symbol-defs.svg#icon-arrow-up"></use></svg
+      ></a>
+    </button>
+    <script src="./js/up_button.js"></script>
     <script src="index.js" type="module"></script>
   </body>
 </html>
