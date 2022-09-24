@@ -4,6 +4,7 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { refs } from './js/refs.js';
 import addMurkup from './js/add_murcup.js';
 import Fetch from './js/fech_info.js';
+import { AxiosError } from 'axios';
 
 const fetchInfo = new Fetch();
 const gallerySimpleLightbox = new SimpleLightbox('.gallery a');
@@ -18,38 +19,43 @@ inputEl.addEventListener('input', evt => {
 function onFormEl(evt) {
   evt.preventDefault();
   CleanMurkup();
-  fetchInfo.fetchInfo(fetchInfo.searchedData).then(data => {
-    if (!data.data.hits.length) {
-      return Notiflix.Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again.'
+
+  fetchInfo
+    .fetchInfo(fetchInfo.searchedData)
+    .then(data => {
+      if (!data.data.hits.length) {
+        return Notiflix.Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.'
+        );
+      }
+      Notiflix.Notify.success(
+        `Hooray! We found ${data.data.totalHits} images.`
       );
-    }
-    Notiflix.Notify.success(`Hooray! We found ${data.data.totalHits} images.`);
-    btnEl.classList.remove('is-hidden');
-    if (data.data.totalHits <= 40) {
-      btnEl.classList.add('is-hidden');
-    }
+      btnEl.classList.remove('is-hidden');
+      if (data.data.totalHits <= 40) {
+        btnEl.classList.add('is-hidden');
+      }
 
-    fetchInfo.pageDicriment();
-    addMurkup(murkupEl, data.data.hits);
-    const { height: cardHeight } = document
-      .querySelector('.gallery a')
-      .firstElementChild.getBoundingClientRect();
+      fetchInfo.pageDicriment();
+      addMurkup(murkupEl, data.data.hits);
+      const { height: cardHeight } = document
+        .querySelector('.gallery a')
+        .firstElementChild.getBoundingClientRect();
 
-    window.scrollBy({
-      top: cardHeight * 1,
-      behavior: 'smooth',
-    });
-    gallerySimpleLightbox.refresh();
-  });
+      window.scrollBy({
+        top: cardHeight * 1,
+        behavior: 'smooth',
+      });
+      gallerySimpleLightbox.refresh();
+    })
+    .catch(err => console.log(err.message));
 }
 
 function onBtnEl() {
   fetchInfo
     .fetchInfo(fetchInfo.searchedData)
     .then(data => {
-      console.log(data);
-      if (!data.data.hits.length) {
+      if (!data) {
         btnEl.classList.add('is-hidden');
         return Notiflix.Notify.info(
           "We're sorry, but you've reached the end of search results."
@@ -70,7 +76,7 @@ function onBtnEl() {
       });
       gallerySimpleLightbox.refresh();
     })
-    .catch(err => console.log(err));
+    .catch(err => console.log(err.message));
 }
 
 function CleanMurkup() {

@@ -22,12 +22,7 @@ export default class Fetch {
     try {
       const response = await axios.get(url);
 
-      if (response.status === 400) {
-        refs.btnEl.classList.add('is-hidden');
-        return Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-      } else if (response.status === 404) {
+      if (response.status === 404) {
         return [];
       }
 
