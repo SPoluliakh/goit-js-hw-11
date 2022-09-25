@@ -19,17 +19,13 @@ export default class Fetch {
     });
     const url = `https://pixabay.com/api/?${searchParams}`;
 
-    try {
-      const response = await axios.get(url);
+    const response = await axios.get(url);
 
-      if (response.status === 404) {
-        return [];
-      }
-
-      return response;
-    } catch (err) {
-      console.log(err.message);
+    if (response.status === 404) {
+      return [];
     }
+
+    return response;
   }
 
   pageDicriment() {

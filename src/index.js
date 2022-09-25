@@ -4,7 +4,6 @@ import 'simplelightbox/dist/simple-lightbox.min.css';
 import { refs } from './js/refs.js';
 import addMurkup from './js/add_murcup.js';
 import Fetch from './js/fech_info.js';
-import { AxiosError } from 'axios';
 
 const fetchInfo = new Fetch();
 const gallerySimpleLightbox = new SimpleLightbox('.gallery a');
@@ -16,67 +15,63 @@ inputEl.addEventListener('input', evt => {
   fetchInfo.searchedData = evt.target.value;
 });
 
-function onFormEl(evt) {
+async function onFormEl(evt) {
   evt.preventDefault();
   CleanMurkup();
 
-  fetchInfo
-    .fetchInfo(fetchInfo.searchedData)
-    .then(data => {
-      if (!data.data.hits.length) {
-        return Notiflix.Notify.failure(
-          'Sorry, there are no images matching your search query. Please try again.'
-        );
-      }
-      Notiflix.Notify.success(
-        `Hooray! We found ${data.data.totalHits} images.`
+  try {
+    const data = await fetchInfo.fetchInfo(fetchInfo.searchedData);
+
+    if (!data.data.hits.length) {
+      return Notiflix.Notify.failure(
+        'Sorry, there are no images matching your search query. Please try again.'
       );
-      btnEl.classList.remove('is-hidden');
-      if (data.data.totalHits <= 40) {
-        btnEl.classList.add('is-hidden');
-      }
+    }
+    Notiflix.Notify.success(`Hooray! We found ${data.data.totalHits} images.`);
+    btnEl.classList.remove('is-hidden');
+    if (data.data.totalHits <= 40) {
+      btnEl.classList.add('is-hidden');
+    }
 
-      fetchInfo.pageDicriment();
-      addMurkup(murkupEl, data.data.hits);
-      const { height: cardHeight } = document
-        .querySelector('.gallery a')
-        .firstElementChild.getBoundingClientRect();
+    fetchInfo.pageDicriment();
+    addMurkup(murkupEl, data.data.hits);
+    const { height: cardHeight } = document
+      .querySelector('.gallery a')
+      .firstElementChild.getBoundingClientRect();
 
-      window.scrollBy({
-        top: cardHeight * 1,
-        behavior: 'smooth',
-      });
-      gallerySimpleLightbox.refresh();
-    })
-    .catch(err => console.log(err.message));
+    window.scrollBy({
+      top: cardHeight * 1,
+      behavior: 'smooth',
+    });
+    gallerySimpleLightbox.refresh();
+  } catch (err) {
+    console.log(err.message);
+  }
 }
 
-function onBtnEl() {
-  fetchInfo
-    .fetchInfo(fetchInfo.searchedData)
-    .then(data => {
-      if (!data) {
-        btnEl.classList.add('is-hidden');
-        return Notiflix.Notify.info(
-          "We're sorry, but you've reached the end of search results."
-        );
-      }
-      btnEl.classList.remove('is-hidden');
+async function onBtnEl() {
+  try {
+    const data = await fetchInfo.fetchInfo(fetchInfo.searchedData);
+    btnEl.classList.remove('is-hidden');
+    fetchInfo.pageDicriment();
+    addMurkup(murkupEl, data.data.hits);
+    const { height: cardHeight } = document
+      .querySelector('.gallery a')
+      .firstElementChild.getBoundingClientRect();
 
-      fetchInfo.pageDicriment();
-
-      addMurkup(murkupEl, data.data.hits);
-      const { height: cardHeight } = document
-        .querySelector('.gallery a')
-        .firstElementChild.getBoundingClientRect();
-
-      window.scrollBy({
-        top: cardHeight * 1,
-        behavior: 'smooth',
-      });
-      gallerySimpleLightbox.refresh();
-    })
-    .catch(err => console.log(err.message));
+    window.scrollBy({
+      top: cardHeight * 1,
+      behavior: 'smooth',
+    });
+    gallerySimpleLightbox.refresh();
+  } catch (err) {
+    if (err.message === 'Request failed with status code 400') {
+      btnEl.classList.add('is-hidden');
+      return Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+    }
+  }
 }
 
 function CleanMurkup() {
