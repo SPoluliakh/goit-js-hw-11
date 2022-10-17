@@ -58,6 +58,12 @@ async function onBtnEl() {
     const { height: cardHeight } = document
       .querySelector('.gallery a')
       .firstElementChild.getBoundingClientRect();
+    if (fetchInfo.page + 1 === Math.ceil(data.data.totalHits / 40)) {
+      btnEl.classList.add('is-hidden');
+      return Notiflix.Notify.info(
+        "We're sorry, but you've reached the end of search results."
+      );
+    }
 
     window.scrollBy({
       top: cardHeight * 1,
@@ -65,12 +71,7 @@ async function onBtnEl() {
     });
     gallerySimpleLightbox.refresh();
   } catch (err) {
-    if (err.message === 'Request failed with status code 400') {
-      btnEl.classList.add('is-hidden');
-      return Notiflix.Notify.info(
-        "We're sorry, but you've reached the end of search results."
-      );
-    }
+    console.log(err);
   }
 }
 
